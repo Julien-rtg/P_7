@@ -39,6 +39,15 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
+    public function getAllCustomerUsers($id)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.id_customer = :customer')
+            ->setParameter('customer', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
