@@ -18,21 +18,21 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getCustomerUsers"])]
+    #[Groups(["getCustomerUsers", "addUser"])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getCustomerUsers"])]
+    #[Groups(["getCustomerUsers", "addUser"])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getCustomerUsers"])]
+    #[Groups(["getCustomerUsers", "addUser"])]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $city = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length:255, nullable: true)]
     private ?string $address = null;
 
     #[ORM\Column(nullable: true)]

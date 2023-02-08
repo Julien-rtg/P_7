@@ -33,12 +33,12 @@ class ProductController extends AbstractController
         $context = SerializationContext::create()->setGroups(["getProducts"]);
         $jsonProductsList = $this->serializer->serialize($allProducts, 'json', $context);
 
-        return new JsonResponse([
+        return new JsonResponse(
             $jsonProductsList,
             Response::HTTP_OK,
             [],
             true
-        ]);
+        );
     }
     
     #[Route('/api/products/{id}', name: 'detailProduct', methods: ['GET'])]
@@ -48,13 +48,13 @@ class ProductController extends AbstractController
         
         $context = SerializationContext::create()->setGroups(["getProducts"]);
         $jsonProduct= $this->serializer->serialize($product, 'json', $context);
-        
-        return new JsonResponse([
+
+        return new JsonResponse(
             $jsonProduct,
             Response::HTTP_OK,
             [],
             true
-        ]);
+        );
         
 
         return new JsonResponse(
