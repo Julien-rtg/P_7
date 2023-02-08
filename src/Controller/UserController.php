@@ -140,5 +140,38 @@ class UserController extends AbstractController
 
     }
 
+
+    #[Route('/api/customer/{id}/user/{userId}', name: 'deleteUserFromCustomer', methods:['DELETE'])]
+    public function deleteUserFromCustomer(Request $request, int $id, int $userId, VersioningService $versioningService, UrlGeneratorInterface $urlGenerator): JsonResponse
+    {
+        $customer = $this->customerRepository->find($id);
+
+        if($customer){
+
+            // je dois faire une vérification si l'id du customer connecté == a l'id du customer en param
+
+            $userToDelete = $this->userRepository->find($userId);
+
+            
+            $this->entityManager->remove($userToDelete);
+            $this->entityManager->flush();
+
+            return new JsonResponse(
+                ['message' => 'User successfully deleted'],
+                Response::HTTP_NO_CONTENT,
+            );
+            
+        }else {
+
+            return new JsonResponse(
+                ['message' => 'This customer does not exist'],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+    }
+
+
+
     
 }
