@@ -38,10 +38,42 @@ class UserController extends AbstractController
             // je dois faire une vérification si l'id du customer connecté == a l'id du customer en param
 
             $version = $versioningService->getVersion();
-            $allUsersCustomer = $this->userRepository->getAllCustomerUsers($id);
+            $allUsersCustomer = $this->userRepository->findBy(['id_customer' => $id]);
             $context = SerializationContext::create()->setGroups(["getCustomerUsers"]);
             // $context->setVersion($version);
             $jsonList = $this->serializer->serialize($allUsersCustomer, 'json', $context );
+
+            return new JsonResponse([
+                $jsonList,
+                Response::HTTP_OK,
+                [],
+                true
+            ]);
+            
+        }else {
+
+            return new JsonResponse([
+                ['message' => 'This customer does not exist'],
+                Response::HTTP_NOT_FOUND
+            ]);
+        }
+
+    }
+
+    #[Route('/api/customer/{id}/user/{userId}', name: 'UserFromCustomer', methods:['GET'])]
+    public function getUserFromCustomer(int $id, int $userId, VersioningService $versioningService): JsonResponse
+    {
+        $customer = $this->customerRepository->find($id);
+
+        if($customer){
+
+            // je dois faire une vérification si l'id du customer connecté == a l'id du customer en param
+
+            $version = $versioningService->getVersion();
+            $UserCustomer = $this->userRepository->find($userId);
+            $context = SerializationContext::create()->setGroups(["getCustomerUsers"]);
+            // $context->setVersion($version);
+            $jsonList = $this->serializer->serialize($UserCustomer, 'json', $context );
 
             return new JsonResponse([
                 $jsonList,
