@@ -4,11 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ProductController extends AbstractController
 {
@@ -29,7 +30,8 @@ class ProductController extends AbstractController
     public function getListOfProducts(): JsonResponse
     {
         $allProducts = $this->productRepository->findAll();
-        $jsonProductsList = $this->serializer->serialize($allProducts, 'json', ['groups' => 'getProducts']);
+        $context = SerializationContext::create()->setGroups(["getProducts"]);
+        $jsonProductsList = $this->serializer->serialize($allProducts, 'json', $context);
 
         return new JsonResponse([
             $jsonProductsList,
@@ -44,7 +46,9 @@ class ProductController extends AbstractController
     {
         // grace au param converter si je passe mon entity product en param il va chercher automatiquement mon id produit
         
-        $jsonProduct = $this->serializer->serialize($product,'json', ['groups' => 'getProducts']);
+        $context = SerializationContext::create()->setGroups(["getProducts"]);
+        $jsonProduct= $this->serializer->serialize($product, 'json', $context);
+        
         return new JsonResponse([
             $jsonProduct,
             Response::HTTP_OK,
