@@ -60,7 +60,7 @@ class AppFixtures extends Fixture
 
             $customer->setName($dataCustomerCollection[$i]);
             $customer->setEmail('admin@' . $dataCustomerCollection[$i] . 'api.com');
-            $customer->setPassword($this->userPasswordHasherInterface->hashPassword($customer, "admin"));
+            $customer->setPassword($this->userPasswordHasherInterface->hashPassword($customer, "mdp123"));
             $customer->setRoles(["ROLE_ADMIN"]);
             $manager->persist($customer);
             $this->addReference(sprintf(self::CUSTOMER_REF, $i), $customer);
