@@ -5,6 +5,28 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+
+/**
+ * 
+ * 
+ * @Hateoas\Relation(
+ *      "detail",
+ *      href = "expr('/api/customer/' ~ object.getIdCustomer().getId() ~ '/user/' ~ object.getId())",
+ *      exclusion = @Hateoas\Exclusion(groups="getAllUsers")
+ * )
+ * 
+ * 
+ * @Hateoas\Relation(
+ *      "delete",
+ *      href = "expr('/api/customer/' ~ object.getIdCustomer().getId() ~ '/user/' ~ object.getId())",
+ *      exclusion = @Hateoas\Exclusion(groups="getCustomerUsers")
+ * )
+ * 
+ * 
+ * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(name="`user`")
+ */
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -13,19 +35,19 @@ class User
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getCustomerUsers"])]
+    #[Groups(["getCustomerUsers", "getAllUsers"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getCustomerUsers", "addUser"])]
+    #[Groups(["getCustomerUsers", "addUser", "getAllUsers"])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getCustomerUsers", "addUser"])]
+    #[Groups(["getCustomerUsers", "addUser", "getAllUsers"])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getCustomerUsers", "addUser"])]
+    #[Groups(["getCustomerUsers", "addUser", "getAllUsers"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable:true)]
