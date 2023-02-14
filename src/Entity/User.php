@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Since;
+
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
@@ -51,12 +53,18 @@ class User
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable:true)]
+    #[Groups(["getCustomerUsers", "addUser", "getAllUsers"])]
+    #[Since("2.0")]
     private ?string $city = null;
 
     #[ORM\Column(length:255, nullable: true)]
+    #[Groups(["getCustomerUsers", "addUser", "getAllUsers"])]
+    #[Since("2.0")]
     private ?string $address = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(["getCustomerUsers", "addUser", "getAllUsers"])]
+    #[Since("2.0")]
     private ?int $zipCode = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]

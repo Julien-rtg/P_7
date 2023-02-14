@@ -43,21 +43,26 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/customer/{id}/users', name: 'AllUsersFromCustomer', methods:['GET'])]
-    public function getAllUsersFromCustomer(int $id, UserRepository $userRepository): JsonResponse
+    public function getAllUsersFromCustomer(int $id, UserRepository $userRepository, Request $request, VersioningService $versioningService): JsonResponse
     {
         $customer = $this->customerRepository->find($id);
-
-        if($customer){
-
+        
+        if($customer){ 
             $customerConnectedId = $this->getUser()->getId();
             if ($customerConnectedId  === $id) {
-                $idCache = "getAllUsersFromCustomer-".$id;
-                $allUsersCustomer = $this->cachePool->get($idCache, function (ItemInterface $item) use ($userRepository, $id) {
+
+                $page = $request->get('page', 1);
+                $limit = $request->get('limit', 3);
+
+                $idCache = "getAllUsersFromCustomer-". $id . "-" .  $page . "-" . $limit;
+                $allUsersCustomer = $this->cachePool->get($idCache, function (ItemInterface $item) use ($userRepository, $id, $page, $limit) {
                     $item->tag("getAllUsersFromCustomer");
-                    return $userRepository->findBy(['id_customer' => $id]);
+                    return $userRepository->findAllWithPagination($id, $page, $limit);
                 });
 
+                $version = $versioningService->getVersion();
                 $context = SerializationContext::create()->setGroups(["getAllUsers"]);
+                $context->setVersion($version);
                 $jsonList = $this->serializer->serialize($allUsersCustomer, 'json', $context);
 
                 return new JsonResponse(
