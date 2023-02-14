@@ -57,7 +57,7 @@ class UserController extends AbstractController
                     return $userRepository->findBy(['id_customer' => $id]);
                 });
 
-                $context = SerializationContext::create()->setGroups(["getCustomerUsers"]);
+                $context = SerializationContext::create()->setGroups(["getAllUsers"]);
                 $jsonList = $this->serializer->serialize($allUsersCustomer, 'json', $context);
 
                 return new JsonResponse(
