@@ -113,22 +113,37 @@ class UserController extends AbstractController
             $contextDeserialization = DeserializationContext::create()->setGroups(["addUser"]);
             $newUser = $this->serializer->deserialize($request->getContent(), User::class, 'json', $contextDeserialization);
 
-            // on fera les gestions des erreurs plus tard
-            $newUser->setIdCustomer($customer);
-            
-            $this->entityManager->persist($newUser);
-            $this->entityManager->flush();
+            if (
+                ($newUser->getFirstName() === null || $newUser->getFirstName() === "") &&
+                ($newUser->getLastName() === null || $newUser->getLastName() === "") &&
+                ($newUser->getEmail() === null || $newUser->getEmail() === "")
+            ) {
+                return new JsonResponse(['message' => 'Fields must not be null or empty'], Response::HTTP_NOT_FOUND);
+            } else if ($newUser->getFirstName() === null || $newUser->getFirstName() === "") {
+                return new JsonResponse(['message' => 'The field first_name must not be null or empty'], Response::HTTP_NOT_FOUND);
+            } else if ($newUser->getLastName() === null || $newUser->getLastName() === "") {
+                return new JsonResponse(['message' => 'The field last_name must not be null or empty'], Response::HTTP_NOT_FOUND);
+            } else if ($newUser->getEmail() === null || $newUser->getEmail() === "") {
+                return new JsonResponse(['message' => 'The field email must not be null or empty'], Response::HTTP_NOT_FOUND);
+            } else {
 
-            $context = SerializationContext::create()->setGroups(["addUser"]);
-            $jsonNewUser = $this->serializer->serialize($newUser, 'json', $context );
-            $location = $urlGenerator->generate('UserFromCustomer', ['id' => $customer->getId() , 'userId' =>  $newUser->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+                $newUser->setIdCustomer($customer);
+                
+                $this->entityManager->persist($newUser);
+                $this->entityManager->flush();
+    
+                $context = SerializationContext::create()->setGroups(["addUser"]);
+                $jsonNewUser = $this->serializer->serialize($newUser, 'json', $context );
+                $location = $urlGenerator->generate('UserFromCustomer', ['id' => $customer->getId() , 'userId' =>  $newUser->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+    
+                return new JsonResponse(
+                    $jsonNewUser,
+                    Response::HTTP_CREATED,
+                    ["Location" => $location],
+                    true
+                );
+            }
 
-            return new JsonResponse(
-                $jsonNewUser,
-                Response::HTTP_CREATED,
-                ["Location" => $location],
-                true
-            );
             
         }else {
 
