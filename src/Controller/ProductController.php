@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 
 class ProductController extends AbstractController
 {
@@ -32,6 +35,30 @@ class ProductController extends AbstractController
         $this->cachePool = $cachePool;
     }
 
+    /** 
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne la liste des produits",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Product::class, groups={"getProducts"}))
+     *     )
+     * )
+     * @OA\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="La page que l'on veut récupérer",
+     *     @OA\Schema(type="int")
+     * )
+     *
+     * @OA\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Le nombre d'éléments que l'on veut récupérer",
+     *     @OA\Schema(type="int")
+     * )
+     * @OA\Tag(name="Products")
+     */
     #[Route('/api/products', name: 'listProducts', methods: ['GET'])]
     public function getListOfProducts(Request $request, ProductRepository $productRepository): JsonResponse
     {
@@ -54,7 +81,18 @@ class ProductController extends AbstractController
             true
         );
     }
-    
+
+    /** 
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne détail d'un produit",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Product::class, groups={"getProducts"}))
+     *     )
+     * )
+     * @OA\Tag(name="Products")
+     */
     #[Route('/api/products/{id}', name: 'detailProduct', methods: ['GET'])]
     public function getDetailOfProduct(int $id, ProductRepository $productRepository): JsonResponse
     {
