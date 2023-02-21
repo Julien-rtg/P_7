@@ -17,7 +17,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;   
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 
 class UserController extends AbstractController
 {
@@ -42,6 +45,30 @@ class UserController extends AbstractController
         
     }
 
+    /** 
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne la liste d'un utilisateur d'un client",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=User::class, groups={"getAllUsers"}))
+     *     )
+     * )
+     * @OA\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="La page que l'on veut récupérer",
+     *     @OA\Schema(type="int")
+     * )
+     *
+     * @OA\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     description="Le nombre d'éléments que l'on veut récupérer",
+     *     @OA\Schema(type="int")
+     * )
+     * @OA\Tag(name="Users")
+     */
     #[Route('/api/customer/{id}/users', name: 'AllUsersFromCustomer', methods:['GET'])]
     public function getAllUsersFromCustomer(int $id, UserRepository $userRepository, Request $request, VersioningService $versioningService): JsonResponse
     {
@@ -88,6 +115,17 @@ class UserController extends AbstractController
 
     }
 
+    /** 
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne un utilisateur d'un client",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=User::class, groups={"getCustomerUsers"}))
+     *     )
+     * )
+     * @OA\Tag(name="Users")
+     */
     #[Route('/api/customer/{id}/user/{userId}', name: 'UserFromCustomer', methods:['GET'])]
     public function getUserFromCustomer(int $id, int $userId, UserRepository $userRepository): JsonResponse
     {
@@ -137,9 +175,19 @@ class UserController extends AbstractController
 
     }
 
-
+    /** 
+     * @OA\Response(
+     *     response=201,
+     *     description="Ajoute un utilisateur pour un client",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=User::class, groups={"addUser"}))
+     *     )
+     * )
+     * @OA\Tag(name="Users")
+     */
     #[Route('/api/customer/{id}/user', name: 'addUserFromCustomer', methods:['POST'])]
-    public function addUserFromCustomer(Request $request, int $id, VersioningService $versioningService, UrlGeneratorInterface $urlGenerator): JsonResponse
+    public function addUserFromCustomer(Request $request, int $id, UrlGeneratorInterface $urlGenerator): JsonResponse
     {
         $customer = $this->customerRepository->find($id);
 
@@ -197,9 +245,16 @@ class UserController extends AbstractController
 
     }
 
-
+    /** 
+     * 
+     * @OA\Response(
+     *     response=204,
+     *     description="Suppression utilisateur",
+     * )
+     * @OA\Tag(name="Users")
+     */
     #[Route('/api/customer/{id}/user/{userId}', name: 'deleteUserFromCustomer', methods:['DELETE'])]
-    public function deleteUserFromCustomer(Request $request, int $id, int $userId, VersioningService $versioningService, UrlGeneratorInterface $urlGenerator): JsonResponse
+    public function deleteUserFromCustomer(int $id, int $userId): JsonResponse
     {
         $customer = $this->customerRepository->find($id);
 

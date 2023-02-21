@@ -1,0 +1,98 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: API BILEMO
+            description: Une API qui permet de récupérer un ensemble de données mobiles
+            version: 2.0.0
+        paths:
+            /api/login_check:
+                post:
+                    tags:
+                        - Token
+                    operationId: postCredentialsItem
+                    summary: Permet d'obtenir le token JWT pour se logger.
+                    requestBody:
+                        description: Crée un nouveau token JWT
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/Credentials'
+                    responses:
+                        '200':
+                            description: Récupère le token JWT
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Token'
+
+            /api/customer/{id}/users:
+                get:
+                    summary: Permet d'obtenir la liste des utilisateurs pour un opérateur.
+
+            /api/customer/{id}/user:
+                post:
+                    summary: Permet de créer un nouvel utilisateur pour un opérateur.
+                    requestBody:
+                        description: Crée un nouvel utilisateur
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/User'
+
+            /api/customer/{id}/user/{userId}:
+                get:
+                    summary: Permet d'obtenir un utilisateur d'un opérateur.
+
+                delete:
+                    summary: Permet de supprimer un utilisateur d'un opérateur.                    
+
+            /api/products:
+                get:
+                    summary: Liste de tous produits
+
+            /api/products/{id}:
+                get:
+                    summary: Détail d'un produit      
+                 
+        components:
+            schemas:
+                Token:
+                    type: object
+                    properties:
+                        token:
+                            type: string
+                            readOnly: true
+                Credentials:
+                    type: object
+                    properties:
+                        username:
+                            type: string
+                            default: admin@Orangeapi.com
+                        password:
+                            type: string
+                            default: mdp123
+                User:
+                    type: object
+                    properties:
+                        firstName:
+                            type: string
+                            default: string
+                        lastName:
+                            type: string
+                            default: string
+                        email:
+                            type: string
+                            default: string
+
+            securitySchemes:
+                bearerAuth:
+                    type: apiKey
+                    in: header
+                    name: Authorization # or another header name
+        security:
+            - bearerAuth: []
+    areas: # to filter documented areas
+        disable_default_routes: true    
+
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
