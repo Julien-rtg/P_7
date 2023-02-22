@@ -49,7 +49,6 @@ composer install
 - les réglages qui vont y être fait seront pour une configuration en local:
 - Utilisation de wamp comme serveur pour la base de donnée en SQL avec utilisation de phpmyadmin
 - L'adresse de l'application sera [http://127.0.0.1:8000](http://127.0.0.1:8000/)
-- l'adresse du serveur pour la base de données [http://127.0.0.1:3306](http://127.0.0.1:3306/)
 
 Dans le fichier .env.local penser à commenté la ligne concernant le postgresql et décommenté la ligne mysql au dessus
 
