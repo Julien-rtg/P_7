@@ -157,6 +157,11 @@ symfony server:start
 
 [http://127.0.0.1:8000](http://127.0.0.1:8000/)/api/doc ou localhost:8000/api/doc
 
+3- Pour vous connecter et récupérer le token d'authentification, renseigner ces informations de connexion :
+
+    Username : admin@Orangeapi.com
+    Password : mdp123
+
 3- Pour arrêter le serveur
 
 ```
